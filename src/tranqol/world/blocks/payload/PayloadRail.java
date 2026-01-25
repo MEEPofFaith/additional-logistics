@@ -383,7 +383,7 @@ public class PayloadRail extends PayloadBlock{
                 clawVec.set(payload).sub(this);
                 clawInAlpha = 1f;
 
-                tryCreateRailPayload();
+                if(!checkLink()) tryCreateRailPayload();
             }else{
                 super.handlePayload(source, payload);
             }
