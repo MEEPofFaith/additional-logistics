@@ -205,7 +205,7 @@ public class PayloadRail extends PayloadBlock{
             Draw.scl();
 
             Draw.z(Layer.power + 0.2f);
-            TQDrawf.spinSprite(clawRegions, x, y, ang, clawOutAlpha * opacity);
+            if(incoming == -1) TQDrawf.spinSprite(clawRegions, x, y, ang, clawOutAlpha * opacity);
         }
 
         @Override
@@ -307,14 +307,19 @@ public class PayloadRail extends PayloadBlock{
 
             clawOutAlpha = Mathf.approachDelta(clawOutAlpha, 1, clawWarmupRate);
             if(moveInPayload(true)){
-                if(items.isEmpty() || dst(items.peek()) > items.peek().radius() + payRadius(payload) + bufferDst){
-                    items.add(new RailPayload(payload, x, y));
-                    payload = null;
-                    clawOutAlpha = 0f;
-                }
+                tryCreateRailPayload();
             }
 
             updateRail();
+        }
+
+        public void tryCreateRailPayload(){
+            if(items.isEmpty() || dst(items.peek()) > items.peek().radius() + payRadius(payload) + bufferDst){
+                items.add(new RailPayload(payload, x, y));
+                payload = null;
+                clawOutAlpha = 0f;
+                if(incoming != 0) clawInAlpha = 0f;
+            }
         }
 
         public void updateRail(){
@@ -377,6 +382,8 @@ public class PayloadRail extends PayloadBlock{
 
                 clawVec.set(payload).sub(this);
                 clawInAlpha = 1f;
+
+                tryCreateRailPayload();
             }else{
                 super.handlePayload(source, payload);
             }
