@@ -156,6 +156,6 @@ public class PowerGraphInfoDialog extends BaseDialog{
     public enum PowerInfoType{
         producer,
         consumer,
-        battery;
+        battery
     }
 }
