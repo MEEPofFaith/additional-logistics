@@ -11,6 +11,7 @@ import arc.util.*;
 import arc.util.io.*;
 import mindustry.core.*;
 import mindustry.entities.units.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
@@ -33,7 +34,7 @@ public class PayloadRail extends PayloadBlock{
     public float clawWarmupRate = 0.08f;
     public float warmupSpeed = 0.05f;
 
-    protected TextureRegion railEndRegion, arrowRegion;
+    protected TextureRegion railEndRegion, arrowRegion, clawGlow;
     protected TextureRegion[] railRegions, clawRegions;
 
     public PayloadRail(String name){
@@ -123,6 +124,7 @@ public class PayloadRail extends PayloadBlock{
             railRegions[i] = Core.atlas.find(name + "-rail-" + i);
             clawRegions[i] = Core.atlas.find(name + "-claw-" + i);
         }
+        clawGlow = Core.atlas.find(name + "-claw-glow");
 
         arrowRegion = Core.atlas.find("bridge-arrow");
     }
@@ -167,6 +169,11 @@ public class PayloadRail extends PayloadBlock{
                 Building other = world.build(incoming);
                 if(other instanceof PayloadRailBuild){
                     TQDrawf.spinSprite(clawRegions, x + clawVec.x, y + clawVec.y, other.angleTo(this), clawInAlpha);
+
+                    Draw.z(Layer.power);
+                    Draw.color(team.color, clawInAlpha);
+                    Draw.rect(clawGlow, x + clawVec.x, y + clawVec.y, other.angleTo(this));
+                    Draw.color();
                 }
             }
 
@@ -179,7 +186,7 @@ public class PayloadRail extends PayloadBlock{
 
             items.each(p -> {
                 Draw.z(Layer.power - 1);
-                p.draw();
+                p.draw(team.color);
             });
 
             Draw.z(Layer.power);
@@ -195,7 +202,7 @@ public class PayloadRail extends PayloadBlock{
             }
 
             Draw.z(Layer.effect);
-            Draw.color(Pal.accent, opacity);
+            Draw.color(team.color, opacity);
             Draw.scl(warmup * 1.1f);
             for(int i = 0; i < 4; i++){
                 Tmp.v1.set(x, y).lerp(other.x, other.y, 0.5f + (i - 1.5f) * 0.2f);
@@ -204,8 +211,14 @@ public class PayloadRail extends PayloadBlock{
             Draw.color();
             Draw.scl();
 
-            Draw.z(Layer.power + 0.2f);
-            if(incoming == -1) TQDrawf.spinSprite(clawRegions, x, y, ang, clawOutAlpha * opacity);
+            if(incoming == -1){
+                Draw.z(Layer.power + 0.2f);
+                TQDrawf.spinSprite(clawRegions, x, y, ang, clawOutAlpha * opacity);
+                Draw.z(Layer.effect);
+                Draw.color(team.color, clawOutAlpha * opacity);
+                Draw.rect(clawGlow, x, y, ang);
+                Draw.color();
+            }
         }
 
         @Override
@@ -301,6 +314,7 @@ public class PayloadRail extends PayloadBlock{
             if(checkLink()){
                 items.each(RailPayload::removed);
                 items.clear();
+                clawOutAlpha = 0f;
                 moveOutPayload();
                 return;
             }
@@ -508,7 +522,7 @@ public class PayloadRail extends PayloadBlock{
             );
         }
 
-        public void draw(){
+        public void draw(Color glowColor){
             float opacity = Renderer.bridgeOpacity;
             if(opacity < 0.999f){
                 FrameBuffer buffer = renderer.effectBuffer;
@@ -525,6 +539,10 @@ public class PayloadRail extends PayloadBlock{
             }
             Draw.z(Layer.power + 0.2f);
             TQDrawf.spinSprite(clawRegions, payload.x(), payload.y(), dir, opacity);
+            Draw.z(Layer.effect);
+            Draw.color(glowColor, opacity);
+            Draw.rect(clawGlow, payload.x(), payload.y(), dir);
+            Draw.reset();
         }
 
         public boolean railArrived(Position target){
