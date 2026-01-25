@@ -164,6 +164,7 @@ public class TQBlocks{
 
         payloadRail = new PayloadRail("payload-rail"){{
             requirements(Category.units, with(Items.graphite, 45, Items.titanium, 35, Items.silicon, 20));
+            payloadSpeed = 24f / 45f; //Match move speed of payload conveyor
         }};
 
         // endregion
@@ -180,6 +181,7 @@ public class TQBlocks{
 
         reinforcedPayloadRail = new PayloadRail("reinforced-payload-rail"){{
             requirements(Category.units, with(Items.tungsten, 55, Items.silicon, 25, Items.oxide, 10));
+            payloadSpeed = 24f / 35f; //Match move speed of reinforced payload conveyor
         }};
 
         // endregion
