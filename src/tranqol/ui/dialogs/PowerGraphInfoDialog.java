@@ -103,7 +103,7 @@ public class PowerGraphInfoDialog extends BaseDialog{
 
         switch(currType){
             case producer -> {
-                IntSeq prodKeys = producers.keys().toArray();
+                IntSeq prodKeys = producers.keys().toSeq();
                 prodKeys.sort();
                 prodKeys.each(id -> {
                     infoTable.add(new PowerInfoGroup(producers.get(id), PowerInfoType.producer, opened.contains(id), collToggled)).growX().top().padBottom(6f);
@@ -111,7 +111,7 @@ public class PowerGraphInfoDialog extends BaseDialog{
                 });
             }
             case consumer -> {
-                IntSeq consKeys = consumers.keys().toArray();
+                IntSeq consKeys = consumers.keys().toSeq();
                 consKeys.sort();
                 consKeys.each(id -> {
                     infoTable.add(new PowerInfoGroup(consumers.get(id), PowerInfoType.consumer, opened.contains(id), collToggled)).growX().top().padBottom(6f);
@@ -119,7 +119,7 @@ public class PowerGraphInfoDialog extends BaseDialog{
                 });
             }
             case battery -> {
-                IntSeq battKeys = batteries.keys().toArray();
+                IntSeq battKeys = batteries.keys().toSeq();
                 battKeys.sort();
                 battKeys.each(id -> {
                     infoTable.add(new PowerInfoGroup(batteries.get(id), PowerInfoType.battery, opened.contains(id), collToggled)).growX().top().padBottom(6f);
