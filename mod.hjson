@@ -17,7 +17,7 @@ description: "A quality of life mod that adds useful blocks for transportation a
 version: v8.2
 
 #the minimum game build required to run this mod
-minGameVersion: 154
+minGameVersion: 159
 
 #this is a java mod
 java: true
