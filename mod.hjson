@@ -13,6 +13,8 @@ main: "tranqol.Tranqol"
 #the mod description as seen in the mod dialog
 description: "A quality of life mod that adds useful blocks for transportation and logistics."
 
+repo: "MEEPofFaith/additional-logistics"
+
 #the mod version
 version: v8.3
 
